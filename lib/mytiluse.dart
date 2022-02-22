@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:developer';
 import 'package:date_time_picker/date_time_picker.dart';
 
+import 'itemsList.dart';
+
 
 void main() => runApp(const MyApp());
 
@@ -30,16 +32,9 @@ class _MytiluSE extends State<MytiluSE> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Banchi',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Aree',
-      style: optionStyle,
-    ),
-
+  final _widgetOptions = [
+    ItemsListPage(),
+    const Text('Index 1: Aree', style: optionStyle),
   ];
 
   get initialDate => DateTime.parse('2022-07-20 20:18:04Z');
@@ -64,6 +59,7 @@ class _MytiluSE extends State<MytiluSE> {
       appBar: AppBar(
         title: const Text('MytiluSE'),
       ),
+      /*
       body: Container(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -91,13 +87,13 @@ class _MytiluSE extends State<MytiluSE> {
                     },
                     onSaved: (val) => print(val),
                   )
-
               ),
-
             ]
         ),
-        
-
+      ),
+       */
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
 
       bottomNavigationBar: BottomNavigationBar(
