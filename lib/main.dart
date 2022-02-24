@@ -76,8 +76,8 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            // MaterialPageRoute(builder: (context) => const AboutPage()),
-                            MaterialPageRoute(builder: (context) => const ItemPage(title: "Test")),
+                             MaterialPageRoute(builder: (context) => const AboutPage()),
+                            //MaterialPageRoute(builder: (context) => ItemPage(title: "Test")),
                           );
                         },
                       ),

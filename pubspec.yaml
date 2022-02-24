@@ -59,6 +59,8 @@ flutter:
     - resources/logo_mytiluse2.png
     - resources/arrow/
     - resources/status/
+    - resources/colorbar/
+    - resources/meteo_icon/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
