@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mytiluse/itemPage.dart';
 import 'about.dart';
 import 'login.dart';
 import 'mytiluse.dart';
@@ -75,7 +76,8 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const AboutPage()),
+                            // MaterialPageRoute(builder: (context) => const AboutPage()),
+                            MaterialPageRoute(builder: (context) => const ItemPage(title: "Test")),
                           );
                         },
                       ),

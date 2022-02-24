@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mytiluse/place.dart';
 
 class Item extends StatelessWidget{
   @override
@@ -25,8 +26,8 @@ class ItemPageState extends State<ItemPage>{
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   final List<Widget> _widgetOptions = <Widget>[
-    const Text( 'Index 1: Meteo', style: optionStyle),
-    const Text( 'Index 1: Mare', style: optionStyle)
+    PlacePage(),
+    PlacePage()
   ];
 
   @override
