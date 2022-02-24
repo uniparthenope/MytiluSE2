@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
               final message = snapshot.data.toString();
               return Scaffold(
                   appBar: AppBar(
-                    title: Text("MytiluSE"),
+                    title: const Text("MytiluSE"),
                     actions: <Widget>[
                       IconButton(
                         icon: const Icon(Icons.info),
@@ -92,12 +92,12 @@ class _MyAppState extends State<MyApp> {
                     ],
                   ),
                   body: Container(
-                      padding: EdgeInsets.only(left: 10,top: 5),
+                      padding: const EdgeInsets.only(left: 10,top: 5),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image(image: AssetImage('resources/logo_mytiluse.png')),
+                          const Image(image: AssetImage('resources/logo_mytiluse.png')),
                           Text(message),
                           Container(
                             margin: const EdgeInsets.only(top: 10.0),
@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                                   MaterialPageRoute(builder: (context) => MytiluSE()),
                                 );
                               },
-                              child: Text('Accept and Continue'),
+                              child: const Text('Accept and Continue'),
                             ),
                           )
                         ],

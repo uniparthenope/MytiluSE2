@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 const String apiBase= 'https://api.meteo.uniparthenope.it';
 const List<String> locations = ["VET0130", "VET0020", "VET0021", "VET0072", "VET0071", "VET0100", "VET0062", "VET0150", "VET0055", "VET0054", "VET0056", "VET0051", "VET0050", "VET0053", "VET0052", "VET0121", "VET0123", "VET0122", "VET0125", "VET0124", "VET0000", "VET0031", "VET0030", "VET0140", "VET0061", "VET0063", "VET0064", "VET0110", "VET0010", "VET0160", "VET0057", "VET0042", "VET0041"];
@@ -15,13 +16,17 @@ class Item {
   Item({this.id, this.name, this.curDir, this.curVal, this.status});
 }
 
-Future<List> getItems(selDateTime) async {
+
+Future<List> getItems(String date) async {
+  print("Data Items: " + date);
+  final _date = DateTime.parse(date);
+  final DateFormat formatter = DateFormat('yyyyMMdd HH00');
+  final String formattedDate = formatter.format(_date).replaceAll(" ", "Z");
+
   List<Item> list = <Item>[];
 
   for (int i=0; i < locations.length; i++){
-    print(selDateTime);
-    // final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + locations[i] + "?date=" + search_data + "&opt=place"));
-    final response = await http.get(Uri.parse(apiBase + "/products/rms3/forecast/" + locations[i] + "?opt=place"));
+    final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + locations[i] + "?date=" + formattedDate + "&opt=place"));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -33,8 +38,7 @@ Future<List> getItems(selDateTime) async {
         var name = data["place"]["long_name"]["it"].toString();
         var status = 'resources/status/none.png'.toString();
 
-        // "?date=" + search_data
-        final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id));
+        final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id + "?date=" + formattedDate));
         if (response2.statusCode == 200) {
           var data2 = jsonDecode(response2.body);
 
@@ -52,26 +56,27 @@ Future<List> getItems(selDateTime) async {
   return list;
 }
 
-class ItemsList extends StatefulWidget {
-  final String selDateTime;
-  const ItemsList({Key? key, required this.selDateTime}) : super(key: key);
+class ListLayout extends StatefulWidget {
+  final String date;
 
-//TODO Import value and update
+  ListLayout({required this.date});
+
   @override
-  State<ItemsList> createState() => ItemsListPage(this.selDateTime);
-
+  _ListLayoutState createState() => _ListLayoutState();
 }
 
-class ItemsListPage extends State<ItemsList> {
-  final String _selDateTime;
-  ItemsListPage(this._selDateTime);
+class _ListLayoutState extends State<ListLayout> {
+  void refresh() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    var date = widget.date;
     return Scaffold(
         body: Center(
           child: FutureBuilder(
-              future: getItems(_selDateTime),
+              future: getItems(date),
               builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
                 var items = snapshot.data;
 
@@ -97,5 +102,4 @@ class ItemsListPage extends State<ItemsList> {
         )
     );
   }
-
 }

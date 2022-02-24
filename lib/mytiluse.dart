@@ -4,40 +4,48 @@ import 'package:date_time_picker/date_time_picker.dart';
 
 import 'itemsList.dart';
 
-
-String _selectedDateTime = '';
-
-class MytiluSE extends StatefulWidget {
-
-  const MytiluSE({Key? key}) : super(key: key);
-
+class MytiluSE extends StatelessWidget{
   @override
-  State<MytiluSE> createState() => _MytiluSE();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: MytiluSEPage(title: 'Mytiluse'),
+    );
+  }
 }
 
-class _MytiluSE extends State<MytiluSE> {
+class MytiluSEPage extends StatefulWidget{
+  final String title;
+
+  const MytiluSEPage({required this.title});
+
+  @override
+  MytiluSEPageState createState() => MytiluSEPageState();
+
+}
+
+class MytiluSEPageState extends State<MytiluSEPage>{
   int _selectedIndex = 0;
-  ItemsList listview = ItemsList(selDateTime: 'Hello');
+  String text = "Update";
+  var date = DateTime.now().toString();
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    ItemsList(selDateTime: _selectedDateTime),
-    const Text( 'Index 1: Aree', style: optionStyle),
+  List<Widget> _widgetOptions = <Widget>[
+    ListLayout(date: DateTime.now().toString()),
+    const Text( 'Index 1: Aree', style: optionStyle)
   ];
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  get initialDate => DateTime.parse('2022-07-20 20:18:04Z');
-
-  get lastDate => DateTime.parse('2022-07-20 20:18:04Z');
-
-  get firstDate => DateTime.parse('1969-07-20 20:18:04Z');
-
-
-  void _onItemTapped(int index) {
-    print("ITEM_TAPPED!");
+  void _handleRefresh(val) {
     setState(() {
-      _selectedIndex = index;
+      _widgetOptions = <Widget>[
+        ListLayout(date: val),
+        const Text('Update', style: optionStyle)
+      ];
     });
   }
 
@@ -45,15 +53,12 @@ class _MytiluSE extends State<MytiluSE> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MytiluSE'),
+        title: Text(widget.title),
       ),
-
       body: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+        child: Column(mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               Expanded(
                   flex: 1,
                   child: DateTimePicker(
@@ -62,23 +67,18 @@ class _MytiluSE extends State<MytiluSE> {
                     initialValue: DateTime.now().toString(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    icon: Icon(Icons.event),
+                    icon: const Icon(Icons.event),
                     dateLabelText: 'Date',
                     timeLabelText: "Hour",
                     onChanged: (val) => {
-
-                    setState(() {
-                      _selectedIndex = 0;
-                      new ItemsList(selDateTime: val);
-                    }),
-                      print("C" + _selectedDateTime),
-
+                      _handleRefresh(val),
                     },
                     validator: (val) {
-                      print(val);
                       return null;
                     },
-                    onSaved: (val) => print(val),
+                    onSaved: (val) => {
+                      _handleRefresh(val),
+                    },
                   )
               ),
               Expanded(
@@ -86,11 +86,8 @@ class _MytiluSE extends State<MytiluSE> {
                 child: Center( child: _widgetOptions.elementAt(_selectedIndex),),
               ),
             ]
-        ),
+        )
       ),
-
-
-
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -110,5 +107,11 @@ class _MytiluSE extends State<MytiluSE> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
