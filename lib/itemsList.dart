@@ -15,11 +15,11 @@ class Item {
   Item({this.id, this.name, this.curDir, this.curVal, this.status});
 }
 
-
-Future<List> getItems() async {
+Future<List> getItems(selDateTime) async {
   List<Item> list = <Item>[];
 
   for (int i=0; i < locations.length; i++){
+    print(selDateTime);
     // final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + locations[i] + "?date=" + search_data + "&opt=place"));
     final response = await http.get(Uri.parse(apiBase + "/products/rms3/forecast/" + locations[i] + "?opt=place"));
 
@@ -31,7 +31,7 @@ Future<List> getItems() async {
         var scs = 'resources/arrow/' + data["forecast"]["scs"].toString() + '.jpg';
         var scm = data["forecast"]["scm"].toString();
         var name = data["place"]["long_name"]["it"].toString();
-        var status = 'resources/status/0.png'.toString();
+        var status = 'resources/status/none.png'.toString();
 
         // "?date=" + search_data
         final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id));
@@ -39,7 +39,7 @@ Future<List> getItems() async {
           var data2 = jsonDecode(response2.body);
 
           if (data2["result"] == "ok"){
-            status = 'resources/arrow/' + data2["forecast"]["sts"] + '.png';
+            status = 'resources/status/' + data2["forecast"]["sts"] + '.png';
           }
         }
 
@@ -52,46 +52,44 @@ Future<List> getItems() async {
   return list;
 }
 
-class ItemsListPage extends StatefulWidget {
-  const ItemsListPage({Key? key}) : super(key: key);
+class ItemsList extends StatefulWidget {
+  final String selDateTime;
+  const ItemsList({Key? key, required this.selDateTime}) : super(key: key);
 
+//TODO Import value and update
   @override
-  ItemsListPageState createState() => ItemsListPageState();
+  State<ItemsList> createState() => ItemsListPage(this.selDateTime);
+
 }
 
-class ItemsListPageState extends State<ItemsListPage> {
+class ItemsListPage extends State<ItemsList> {
+  final String _selDateTime;
+  ItemsListPage(this._selDateTime);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
           child: FutureBuilder(
-              future: getItems(),
+              future: getItems(_selDateTime),
               builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
                 var items = snapshot.data;
 
                 return ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     var item = items![index];
-
-                    return GestureDetector(
-                      onTap: () {
-                        print(item.id);
-                      },
-                      child: Card(
-                        child: Column(
-                          children: <Widget>[
-                            Text("Name: " + item.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)
-                            ),
-                            Image(image: AssetImage(item.curDir)),
-                            Text("Cur Dir: " + item.curVal,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)
-                            ),
-                            Image(image: AssetImage(item.status)),
-                          ],
-                        ),
-                      )
+                    return Card(
+                      child: ListTile(
+                        onTap: (){
+                          Scaffold.of(context).showSnackBar(SnackBar(content: Text(item.name + " pressed!")));
+                        },
+                        title: Text(item.name),
+                        subtitle: Text(item.curVal + " m/s"),
+                        leading: Image(image: AssetImage(item.curDir),height: 50,),
+                        trailing: Image(image: AssetImage(item.status),height: 25,),
+                      ),
                     );
+
                   },
                   itemCount: items == null ? 0 : items.length,
                 );
@@ -99,4 +97,5 @@ class ItemsListPageState extends State<ItemsListPage> {
         )
     );
   }
+
 }

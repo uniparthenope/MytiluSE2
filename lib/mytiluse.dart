@@ -5,23 +5,10 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'itemsList.dart';
 
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  static const String _title = 'Flutter Code Sample';
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MytiluSE(),
-    );
-  }
-}
+String _selectedDateTime = '';
 
 class MytiluSE extends StatefulWidget {
+
   const MytiluSE({Key? key}) : super(key: key);
 
   @override
@@ -30,12 +17,15 @@ class MytiluSE extends StatefulWidget {
 
 class _MytiluSE extends State<MytiluSE> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  final _widgetOptions = [
-    ItemsListPage(),
-    const Text('Index 1: Aree', style: optionStyle),
+  ItemsList listview = ItemsList(selDateTime: 'Hello');
+
+  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  static final List<Widget> _widgetOptions = <Widget>[
+    ItemsList(selDateTime: _selectedDateTime),
+    const Text( 'Index 1: Aree', style: optionStyle),
   ];
+
 
   get initialDate => DateTime.parse('2022-07-20 20:18:04Z');
 
@@ -43,11 +33,9 @@ class _MytiluSE extends State<MytiluSE> {
 
   get firstDate => DateTime.parse('1969-07-20 20:18:04Z');
 
-  get onDateChanged => {
-    log("TEST")
-  };
 
   void _onItemTapped(int index) {
+    print("ITEM_TAPPED!");
     setState(() {
       _selectedIndex = index;
     });
@@ -59,18 +47,15 @@ class _MytiluSE extends State<MytiluSE> {
       appBar: AppBar(
         title: const Text('MytiluSE'),
       ),
-      /*
+
       body: Container(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: Center( child: _widgetOptions.elementAt(_selectedIndex),),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
+
+              Expanded(
+                  flex: 1,
                   child: DateTimePicker(
                     type: DateTimePickerType.dateTimeSeparate,
                     dateMask: 'd MMM, yyyy',
@@ -80,7 +65,15 @@ class _MytiluSE extends State<MytiluSE> {
                     icon: Icon(Icons.event),
                     dateLabelText: 'Date',
                     timeLabelText: "Hour",
-                    onChanged: (val) => print(val),
+                    onChanged: (val) => {
+
+                    setState(() {
+                      _selectedIndex = 0;
+                      new ItemsList(selDateTime: val);
+                    }),
+                      print("C" + _selectedDateTime),
+
+                    },
                     validator: (val) {
                       print(val);
                       return null;
@@ -88,13 +81,15 @@ class _MytiluSE extends State<MytiluSE> {
                     onSaved: (val) => print(val),
                   )
               ),
+              Expanded(
+                flex: 10,
+                child: Center( child: _widgetOptions.elementAt(_selectedIndex),),
+              ),
             ]
         ),
       ),
-       */
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+
+
 
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

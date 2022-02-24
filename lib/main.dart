@@ -47,7 +47,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: 'MytiluSE',
         theme: ThemeData(
-        primarySwatch: Colors.blue,
+          // Define the default brightness and colors.
+          colorScheme: const ColorScheme.light().copyWith(primary:  const Color.fromRGBO(0, 96, 160, 1.0)),
+          canvasColor: const Color.fromRGBO(229, 233, 236, 1.0),
+
+          // Define the default font family.
+          fontFamily: 'Georgia',
+
+          // Define the default `TextTheme`. Use this to specify the default
+          // text styling for headlines, titles, bodies of text, and more.
+          textTheme: const TextTheme(
+            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            )
         ),
         home: FutureBuilder(
             future: getMessage(),
