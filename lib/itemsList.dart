@@ -2,18 +2,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:mytiluse/itemPage.dart';
 
 const String apiBase= 'https://api.meteo.uniparthenope.it';
 const List<String> locations = ["VET0130", "VET0020", "VET0021", "VET0072", "VET0071", "VET0100", "VET0062", "VET0150", "VET0055", "VET0054", "VET0056", "VET0051", "VET0050", "VET0053", "VET0052", "VET0121", "VET0123", "VET0122", "VET0125", "VET0124", "VET0000", "VET0031", "VET0030", "VET0140", "VET0061", "VET0063", "VET0064", "VET0110", "VET0010", "VET0160", "VET0057", "VET0042", "VET0041"];
 
-class Item {
+class Row {
   String? id;
   String? name;
   String? curDir;
   String? curVal;
   String? status;
 
-  Item({this.id, this.name, this.curDir, this.curVal, this.status});
+  Row({this.id, this.name, this.curDir, this.curVal, this.status});
 }
 
 
@@ -23,7 +24,7 @@ Future<List> getItems(String date) async {
   final DateFormat formatter = DateFormat('yyyyMMdd HH00');
   final String formattedDate = formatter.format(_date).replaceAll(" ", "Z");
 
-  List<Item> list = <Item>[];
+  List<Row> list = <Row>[];
 
   for (int i=0; i < locations.length; i++){
     final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + locations[i] + "?date=" + formattedDate + "&opt=place"));
@@ -47,7 +48,7 @@ Future<List> getItems(String date) async {
           }
         }
 
-        var item = Item(id: id, name: name, curDir: scs, curVal: scm, status: status);
+        var item = Row(id: id, name: name, curDir: scs, curVal: scm, status: status);
         list.add(item);
       }
     }
@@ -74,32 +75,36 @@ class _ListLayoutState extends State<ListLayout> {
   Widget build(BuildContext context) {
     var date = widget.date;
     return Scaffold(
-        body: Center(
-          child: FutureBuilder(
-              future: getItems(date),
-              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                var items = snapshot.data;
+      body: Center(
+        child: FutureBuilder(
+          future: getItems(date),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            var items = snapshot.data;
 
-                return ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    var item = items![index];
-                    return Card(
-                      child: ListTile(
-                        onTap: (){
-                          Scaffold.of(context).showSnackBar(SnackBar(content: Text(item.name + " pressed!")));
-                        },
-                        title: Text(item.name),
-                        subtitle: Text(item.curVal + " m/s"),
-                        leading: Image(image: AssetImage(item.curDir),height: 50,),
-                        trailing: Image(image: AssetImage(item.status),height: 25,),
-                      ),
-                    );
-
-                  },
-                  itemCount: items == null ? 0 : items.length,
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                var item = items![index];
+                return Card(
+                  child: ListTile(
+                    onTap: (){
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text(item.name + " pressed!")));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ItemPage(title: item.name)),
+                      );
+                    },
+                    title: Text(item.name),
+                    subtitle: Text(item.curVal + " m/s"),
+                    leading: Image(image: AssetImage(item.curDir),height: 50,),
+                    trailing: Image(image: AssetImage(item.status),height: 25,),
+                  ),
                 );
-              }),
-        )
+              },
+              itemCount: items == null ? 0 : items.length,
+            );
+          }
+        ),
+      )
     );
   }
 }
