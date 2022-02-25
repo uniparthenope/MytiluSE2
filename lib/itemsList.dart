@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mytiluse/itemPage.dart';
 
 const String apiBase= 'https://api.meteo.uniparthenope.it';
-//const List<String> locations = ["VET0130", "VET0020", "VET0021", "VET0072", "VET0071", "VET0100", "VET0062", "VET0150", "VET0055", "VET0054", "VET0056", "VET0051", "VET0050", "VET0053", "VET0052", "VET0121", "VET0123", "VET0122", "VET0125", "VET0124", "VET0000", "VET0031", "VET0030", "VET0140", "VET0061", "VET0063", "VET0064", "VET0110", "VET0010", "VET0160", "VET0057", "VET0042", "VET0041"];
+const List<String> locations = ["VET0130", "VET0020", "VET0021", "VET0072", "VET0071", "VET0100", "VET0062", "VET0150", "VET0055", "VET0054", "VET0056", "VET0051", "VET0050", "VET0053", "VET0052", "VET0121", "VET0123", "VET0122", "VET0125", "VET0124", "VET0000", "VET0031", "VET0030", "VET0140", "VET0061", "VET0063", "VET0064", "VET0110", "VET0010", "VET0160", "VET0057", "VET0042", "VET0041"];
 
 class Row {
   String? id;
@@ -27,12 +27,11 @@ Future<List> getItems(String date, locations) async {
 
   List<Row> list = <Row>[];
 
-//TODO Temporary Field!!
   var temp = Row(id: 'VET0130', name: 'NAME', curDir: 'resources/arrow/E.jpg', curVal: '0.2', status: 'resources/status/none.png');
   list.add(temp);
 
-  for (int i=0; i < 0; i++){
-    final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + locations[i] + "?date=" + formattedDate + "&opt=place"));
+  for (int i=0; i < locations.length; i++){
+    final response = await http.get(Uri.parse(apiBase + "/products/rms3/forecast/" + locations[i] + "?date=" + formattedDate + "&opt=place"));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
