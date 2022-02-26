@@ -62,7 +62,8 @@ class MytiluSEPageState extends State<MytiluSEPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic, fontFamily: 'Georgia'),),
+        backgroundColor: Color.fromRGBO(0, 96, 160, 1.0),
       ),
       body: Container(
         child: Column(mainAxisAlignment: MainAxisAlignment.end,
@@ -102,17 +103,16 @@ class MytiluSEPageState extends State<MytiluSEPage>{
           BottomNavigationBarItem(
             icon: Icon(Icons.opacity),
             label: 'Docks',
-            backgroundColor: Colors.red,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.view_week),
             label: 'Areas',
-            backgroundColor: Colors.green,
           ),
 
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[800],
+        selectedItemColor: Colors.white,
+        backgroundColor: Color.fromRGBO(0, 96, 160, 1.0),
         onTap: _onItemTapped,
       ),
     );

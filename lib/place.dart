@@ -14,8 +14,11 @@ class Weather_Item {
   String? rain;
   String? status;
   String? statusName;
+  String? weathIcon;
+  String? weathLabel;
 
-  Weather_Item({this.urlMap, this.urlMap2, this.curDir, this.curVal, this.temperature, this.rain, this.status, this.statusName});
+  Weather_Item({this.urlMap, this.urlMap2, this.curDir, this.curVal, this.temperature,
+    this.rain, this.status, this.statusName, this.weathIcon, this.weathLabel});
 }
 
 class Sea_Item {
@@ -31,45 +34,51 @@ class Sea_Item {
   Sea_Item({this.urlWcm3, this.urlSal, this.urlTemp, this.urlRms, this.curDir, this.curVal, this.T_Sup, this.S_Sup});
 }
 
-Future<Weather_Item> getItemWeather(id) async {
+Future<Weather_Item> getItemWeather(id, date) async {
 
     String urlMap = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
-        id + "/plot/image"; //?date="
+        id + "/plot/image?date=" + date;
     String urlMap2 = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
-        id + "/plot/image?output=wn1"; //?date="
+        id + "/plot/image?output=wn1?date=" + date;
     String url = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
-        id; //"?date="
+        id + "?date=" + date;
 
     var element = Weather_Item(urlMap: '', urlMap2: '');
 
-
-    // final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + id + "?date=" + formattedDate + "&opt=place"));
     final response = await http.get(Uri.parse(url));
+    print(url);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data["result"] == "ok") {
-        // String curDir = data["forecast"]["ws10n"] + " nodi";
-        // String curVal = "resources/arrow/" + data["forecast"]["winds"] + ".jpg";
+        print(data);
+        String curDir = data["forecast"]["ws10n"].toString() + " nodes";
+        String temp = data["forecast"]["t2c"].toString() + " °C";
+        String rain = data["forecast"]["crh"].toString() + " mm";
 
-        element = Weather_Item(urlMap: urlMap, urlMap2: urlMap2);
+        String curVal = "resources/arrow/" + data["forecast"]["winds"] + ".jpg";
+        String weath = "resources/meteo_icon/" + data["forecast"]["icon"];
+        String wLabel = data["forecast"]["text"]['en'];
+
+        element = Weather_Item(urlMap: urlMap, urlMap2: urlMap2, curDir: curDir,
+            curVal: curVal, temperature: temp, rain: rain, weathIcon: weath, weathLabel: wLabel);
       }
 
     }
   return element;
 }
 
-Future<Sea_Item> getItemSea(id) async {
+Future<Sea_Item> getItemSea(id, date) async {
 
   String urlWcm3 = "https://api.meteo.uniparthenope.it/products/wcm3/forecast/" +
-      id + "/plot/image"; //?date="
+      id + "/plot/image?date=" + date;
   String urlSal = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sss"; //?date="
+      id + "/plot/image?output=sss?date=" + date;
   String urlTemp = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sst"; //?date="
+      id + "/plot/image?output=sst?date=" + date;
   String urlRms = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?"; //?date="
+      id + "/plot/image?date=" + date;
   String url = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id; //"?date="
+      id + "?date=" + date;
 
   var element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp:urlTemp,urlRms:urlRms);
   print(urlWcm3);
@@ -94,8 +103,9 @@ Future<Sea_Item> getItemSea(id) async {
 class PlacePage extends StatefulWidget{
   final int state;
   final String id;
+  final String date;
 
-  PlacePage({required this.state, required this.id});
+  PlacePage({required this.state, required this.id, required this.date});
 
   @override
   PlacePageState createState() => PlacePageState();
@@ -112,15 +122,21 @@ class PlacePageState extends State<PlacePage>{
   Widget build(BuildContext context) {
     var state = widget.state;
     var id = widget.id;
+    var date = widget.date;
     if (state == 1){
       return Scaffold(
           body: Center(
             child: FutureBuilder(
-                future: getItemWeather(id),
+                future: getItemWeather(id, date),
                 builder: (BuildContext context, AsyncSnapshot<Weather_Item> snapshot) {
                   var data = snapshot.data;
                   String? urlMap = data?.urlMap;
                   String? urlMap2 = data?.urlMap2;
+                  String? w10 = data?.curDir;
+                  String? t = data?.temperature;
+                  String? r = data?.rain;
+                  String? w = data?.weathIcon;
+                  String? wL = data?.weathLabel;
 
                   return Container(
                       child: SingleChildScrollView(
@@ -139,9 +155,11 @@ class PlacePageState extends State<PlacePage>{
                                   // Località
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Location: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('LOC '), flex: 1,),
+                                      Expanded(child:  Text('Weather: ',
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
+                                      Expanded(child:  Text(wL ?? ''), flex: 1,),
+                                      Expanded(child:  Image.asset(w ?? '', height: 50,), flex: 1,),
+
                                     ],
                                   ),
                                   // Vento 10m
@@ -149,7 +167,7 @@ class PlacePageState extends State<PlacePage>{
                                     children: [
                                       Expanded(child:  Text('Wind 10m: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('VENTO '), flex: 1,),
+                                      Expanded(child:  Text(w10 ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Temperatura
@@ -157,7 +175,7 @@ class PlacePageState extends State<PlacePage>{
                                     children: [
                                       Expanded(child:  Text('Temperature: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('80* '), flex: 1,),
+                                      Expanded(child:  Text(t ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Pioggia
@@ -165,7 +183,7 @@ class PlacePageState extends State<PlacePage>{
                                     children: [
                                       Expanded(child:  Text('Rain: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('VENTO '), flex: 1,),
+                                      Expanded(child:  Text(r ?? ''), flex: 1,),
                                     ],
                                   ),
                                 ],
@@ -177,8 +195,7 @@ class PlacePageState extends State<PlacePage>{
                               child: Column(
                                 children: [
                                   Text('Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-
-                                  Image.network(urlMap2!,fit: BoxFit.fill,
+                                  Image.network(urlMap2 ?? '',fit: BoxFit.fill,
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -198,7 +215,7 @@ class PlacePageState extends State<PlacePage>{
                                   const Divider(height: 20, thickness: 0),
                               Text('Wind Speed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                            Image.network(urlMap!,
+                            Image.network(urlMap ?? '',
                               loadingBuilder: (BuildContext context, Widget child,
                                   ImageChunkEvent? loadingProgress) {
                                 if (loadingProgress == null) return child;
@@ -229,7 +246,7 @@ class PlacePageState extends State<PlacePage>{
       return Scaffold(
           body: Center(
             child: FutureBuilder(
-                future: getItemSea(id),
+                future: getItemSea(id, date),
                 builder: (BuildContext context, AsyncSnapshot<Sea_Item> snapshot) {
                   var data = snapshot.data;
                   String? urlWcm3 = data?.urlWcm3;
@@ -293,7 +310,7 @@ class PlacePageState extends State<PlacePage>{
                                 children: [
                                   Text('RMS3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                                  Image.network(urlWcm3!,fit: BoxFit.fill,
+                                  Image.network(urlWcm3 ?? '',fit: BoxFit.fill,
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -311,7 +328,7 @@ class PlacePageState extends State<PlacePage>{
                                   const Divider(height: 20, thickness: 0),
                                   Text('Salinity Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                                  Image.network(urlSal!,
+                                  Image.network(urlSal ?? '',
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -329,7 +346,7 @@ class PlacePageState extends State<PlacePage>{
                                   const Divider(height: 20, thickness: 0),
                                   Text('Temperature Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                                  Image.network(urlTemp!,
+                                  Image.network(urlTemp ?? '',
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -347,16 +364,15 @@ class PlacePageState extends State<PlacePage>{
                                   const Divider(height: 20, thickness: 0),
                                   Text('WCM3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                                  Image.network(urlRms!,
+                                  Image.network(urlRms ?? '',
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
                                       return Center(
                                         child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                              : null,
+                                          value: loadingProgress != null
+                                              ? (loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!)
+                                              : 0,
                                         ),
                                       );
                                     },),
