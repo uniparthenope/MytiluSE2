@@ -196,6 +196,17 @@ class PlacePageState extends State<PlacePage>{
                                 children: [
                                   Text('Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                   Image.network(urlMap2 ?? '',fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                      color: Colors.redAccent,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'Map not available!',
+
+                                        style: TextStyle(fontSize: 30, color: Colors.white),
+                                      ),
+                                    );
+                                    },
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -216,6 +227,17 @@ class PlacePageState extends State<PlacePage>{
                               Text('Wind Speed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                             Image.network(urlMap ?? '',
+                              errorBuilder: (context, error, stackTrace){
+                                return Container(
+                                  color: Colors.redAccent,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'Map not available!',
+
+                                    style: TextStyle(fontSize: 30, color: Colors.white),
+                                  ),
+                                );
+                              },
                               loadingBuilder: (BuildContext context, Widget child,
                                   ImageChunkEvent? loadingProgress) {
                                 if (loadingProgress == null) return child;
@@ -311,6 +333,17 @@ class PlacePageState extends State<PlacePage>{
                                   Text('RMS3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                                   Image.network(urlWcm3 ?? '',fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -329,6 +362,17 @@ class PlacePageState extends State<PlacePage>{
                                   Text('Salinity Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                                   Image.network(urlSal ?? '',
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -347,6 +391,17 @@ class PlacePageState extends State<PlacePage>{
                                   Text('Temperature Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                                   Image.network(urlTemp ?? '',
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
@@ -365,6 +420,17 @@ class PlacePageState extends State<PlacePage>{
                                   Text('WCM3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                                   Image.network(urlRms ?? '',
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
                                     loadingBuilder: (BuildContext context, Widget child,
                                         ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) return child;
