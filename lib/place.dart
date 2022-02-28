@@ -46,11 +46,9 @@ Future<Weather_Item> getItemWeather(id, date) async {
     var element = Weather_Item(urlMap: '', urlMap2: '');
 
     final response = await http.get(Uri.parse(url));
-    print(url);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data["result"] == "ok") {
-        print(data);
         String curDir = data["forecast"]["ws10n"].toString() + " nodes";
         String temp = data["forecast"]["t2c"].toString() + " °C";
         String rain = data["forecast"]["crh"].toString() + " mm";
@@ -86,13 +84,19 @@ Future<Sea_Item> getItemSea(id, date) async {
 
   // final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + id + "?date=" + formattedDate + "&opt=place"));
   final response = await http.get(Uri.parse(url));
+  print(url);
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     if (data["result"] == "ok") {
-      // String curDir = data["forecast"]["ws10n"] + " nodi";
-      // String curVal = "resources/arrow/" + data["forecast"]["winds"] + ".jpg";
+        String curDir = data["forecast"]["scm"].toString() + " m/sec";
+        String curVal = "resources/arrow/" + data["forecast"]["scs"] + ".jpg";
 
-      element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp: urlTemp, urlRms: urlRms);
+        String TSup = data["forecast"]["sst"].toString() + ' °C';
+        String SSup = data["forecast"]["sss"].toString() + ' [1/1000]';
+
+
+      element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp: urlTemp, urlRms: urlRms,
+      curVal: curVal, curDir: curDir, T_Sup: TSup, S_Sup: SSup);
     }
 
   }
@@ -276,6 +280,11 @@ class PlacePageState extends State<PlacePage>{
                   String? urlTemp = data?.urlTemp;
                   String? urlRms = data?.urlRms;
 
+                  String? curDir = data?.curDir;
+                  String? curVal = data?.curVal;
+                  String? t_sup = data?.T_Sup;
+                  String? s_sup = data?.S_Sup;
+
                   return Container(
                       child: SingleChildScrollView(
                         child: Column(
@@ -290,28 +299,22 @@ class PlacePageState extends State<PlacePage>{
                                   Text('Informations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                   const Divider(height: 20, thickness: 0,),
 
-                                  // Località
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Location: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('LOC '), flex: 1,),
+                                      Expanded(child:  Text('Surface Current: ',
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
+                                      Expanded(child:  Text(curDir ?? ''), flex: 1,),
+                                      Expanded(child:  Image.asset(curVal ?? '', height: 50,), flex: 1,),
+
                                     ],
                                   ),
-                                  // Corrente Sup.
-                                  Row(
-                                    children: [
-                                      Expanded(child:  Text('Current: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('10 m/s '), flex: 1,),
-                                    ],
-                                  ),
+
                                   // Temperatura Sup
                                   Row(
                                     children: [
                                       Expanded(child:  Text('Surface Temperature: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('80* '), flex: 1,),
+                                      Expanded(child:  Text(t_sup ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Surface Salinity
@@ -319,7 +322,7 @@ class PlacePageState extends State<PlacePage>{
                                     children: [
                                       Expanded(child:  Text('Surface Salinity: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
-                                      Expanded(child:  Text('VENTO '), flex: 1,),
+                                      Expanded(child:  Text(s_sup ?? ''), flex: 1,),
                                     ],
                                   ),
                                 ],

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mytiluse/itemPage.dart';
 import 'about.dart';
-import 'login.dart';
 import 'mytiluse.dart';
 import 'dart:async';
 
@@ -76,18 +75,8 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                             MaterialPageRoute(builder: (context) => const AboutPage()),
+                             MaterialPageRoute(builder: (context) => AboutPage()),
                             //MaterialPageRoute(builder: (context) => ItemPage(title: "Test")),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.account_circle),
-                        tooltip: 'Login Page',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginScreen("Ma che bello!")),
                           );
                         },
                       ),

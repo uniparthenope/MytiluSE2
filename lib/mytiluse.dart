@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:developer';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'login.dart';
+import 'about.dart';
 
 import 'itemsList.dart';
 
@@ -64,6 +66,29 @@ class MytiluSEPageState extends State<MytiluSEPage>{
       appBar: AppBar(
         title: Text(widget.title, style: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic, fontFamily: 'Georgia'),),
         backgroundColor: Color.fromRGBO(0, 96, 160, 1.0),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.info),
+            tooltip: 'About',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AboutPage()),
+                //MaterialPageRoute(builder: (context) => ItemPage(title: "Test")),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Login Page',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen("Ma che bello!")),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         child: Column(mainAxisAlignment: MainAxisAlignment.end,
