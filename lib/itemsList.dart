@@ -19,8 +19,7 @@ class Row {
 }
 
 
-Future<List> getItems(String date, locations) async {
-
+Future<List> getItems(bool isLogged, String date, locations) async {
   List<Row> list = <Row>[];
 
   for (int i=0; i < locations.length; i++){
@@ -36,12 +35,15 @@ Future<List> getItems(String date, locations) async {
         var name = data["place"]["long_name"]["it"].toString();
         var status = 'resources/status/none.png'.toString();
 
-        final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id + "?date=" + date));
-        if (response2.statusCode == 200) {
-          var data2 = jsonDecode(response2.body);
+        // Check if user has permission to see status
+        if (isLogged){
+          final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id + "?date=" + date));
+          if (response2.statusCode == 200) {
+            var data2 = jsonDecode(response2.body);
 
-          if (data2["result"] == "ok"){
-            status = 'resources/status/' + data2["forecast"]["sts"].toString() + '.png';
+            if (data2["result"] == "ok"){
+              status = 'resources/status/' + data2["forecast"]["sts"].toString() + '.png';
+            }
           }
         }
 
@@ -55,10 +57,11 @@ Future<List> getItems(String date, locations) async {
 }
 
 class ListLayout extends StatefulWidget {
+  final bool isLogged;
   final String date;
   final List<String> locations;
 
-  ListLayout({required this.date, required this.locations});
+  ListLayout({required this.isLogged, required this.date, required this.locations});
 
   @override
   _ListLayoutState createState() => _ListLayoutState();
@@ -76,7 +79,7 @@ class _ListLayoutState extends State<ListLayout> {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-          future: getItems(date, locations),
+          future: getItems(widget.isLogged, date, locations),
           builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasData){
               var items = snapshot.data;

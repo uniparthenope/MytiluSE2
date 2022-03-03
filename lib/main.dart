@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mytiluse/itemPage.dart';
 import 'about.dart';
+import 'login.dart';
 import 'mytiluse.dart';
 import 'dart:async';
 
@@ -37,13 +38,38 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _loggedIn = false;
   @override
   void initState() {
     super.initState();
   }
 
+  void _navigateLoginPage(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen("Ma che bello!")),
+    );
+    print("Logged in: " + result.toString());
+    _loggedIn = result;
+    setState(() {
+      _loggedIn = result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var loginIcon;
+    String tt;
+
+    if(_loggedIn){
+      loginIcon = const Icon(Icons.logout_rounded);
+      tt = 'Logout';
+    }
+    else {
+      loginIcon = const Icon(Icons.supervisor_account_rounded);
+      tt = 'Login';
+    }
+
     return MaterialApp(
         title: 'MytiluSE',
         theme: ThemeData(
@@ -80,6 +106,44 @@ class _MyAppState extends State<MyApp> {
                           );
                         },
                       ),
+                      IconButton(
+                        icon: loginIcon,
+                        tooltip: tt,
+                        onPressed: () {
+                          if (_loggedIn){
+                            print("LOGOUT");
+                            showDialog(context: context, builder: (context){
+                              return  AlertDialog(
+                                title: Text("Logout"),
+                                titleTextStyle:
+                                TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,fontSize: 20),
+                                actionsOverflowButtonSpacing: 20,
+                                actions: [
+                                  ElevatedButton(onPressed: (){
+                                    _loggedIn = false;
+                                    setState(() {
+                                      _loggedIn = false;
+
+                                    });
+                                    Navigator.pop(context);
+                                  }, child: Text("Yes")),
+                                  ElevatedButton(onPressed: (){
+                                    Navigator.pop(context);
+                                  }, child: Text("No")),
+
+                                ],
+                                content: Text("Are you sure to disconnect?"),
+                              );
+                            });
+
+
+                          } else {
+                            _navigateLoginPage(context);
+                          }
+                        },
+                      ),
                     ],
                   ),
                   body: Container(
@@ -96,7 +160,7 @@ class _MyAppState extends State<MyApp> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => MytiluSE()),
+                                  MaterialPageRoute(builder: (context) => MytiluSE(isLogged: _loggedIn)),
                                 );
                               },
                               child: const Text('Accept and Continue'),
