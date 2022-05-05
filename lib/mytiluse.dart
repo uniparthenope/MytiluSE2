@@ -94,18 +94,7 @@ class _MytiluSEState extends State<MytiluSE>{
                 //MaterialPageRoute(builder: (context) => ItemPage(title: "Test")),
               );
             },
-          ),
-          IconButton(
-            icon: loginIcon,
-            tooltip: tt,
-            onPressed: () {
-              if(widget.isLogged){
-                Navigator.pop(context);
-              }
-
-              //_navigateLoginPage(context);
-            },
-          ),
+          )
         ],
       ),
       body: Container(

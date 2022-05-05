@@ -36,14 +36,12 @@ Future<List> getItems(bool isLogged, String date, locations) async {
         var status = 'resources/status/none.png'.toString();
 
         // Check if user has permission to see status
-        if (isLogged){
-          final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id + "?date=" + date));
-          if (response2.statusCode == 200) {
-            var data2 = jsonDecode(response2.body);
+        final response2 = await http.get(Uri.parse(apiBase + "/products/wcm3/forecast/" + id + "?date=" + date));
+        if (response2.statusCode == 200) {
+          var data2 = jsonDecode(response2.body);
 
-            if (data2["result"] == "ok"){
-              status = 'resources/status/' + data2["forecast"]["sts"].toString() + '.png';
-            }
+          if (data2["result"] == "ok"){
+            status = 'resources/status/' + data2["forecast"]["sts"].toString() + '.png';
           }
         }
 
@@ -79,38 +77,37 @@ class _ListLayoutState extends State<ListLayout> {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-          future: getItems(widget.isLogged, date, locations),
-          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-            if (snapshot.hasData){
-              var items = snapshot.data;
-              return ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  var item = items![index];
-                  return Card(
-                    child: ListTile(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ItemPage(title: item.name, id: item.id, date: date)),
-                        );
-                      },
-                      title: Text(item.name),
-                      subtitle: Text(item.curVal + " m/s"),
-                      leading: Image(image: AssetImage(item.curDir),height: 50,),
-                      trailing: Image(image: AssetImage(item.status),height: 25,),
-                    ),
+            future: getItems(widget.isLogged, date, locations),
+            builder: (context, AsyncSnapshot<List> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+              } else {
+                  var items = snapshot.data;
+                  return ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      var item = items![index];
+                      return Card(
+                        child: ListTile(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ItemPage(title: item.name, id: item.id, date: date)),
+                            );
+                          },
+                          title: Text(item.name),
+                          subtitle: Text(item.curVal + " m/s"),
+                          leading: Image(image: AssetImage(item.curDir),height: 50,),
+                          trailing: Image(image: AssetImage(item.status),height: 25,),
+                        ),
+                      );
+                    },
+                    itemCount: items == null ? 0 : items.length,
                   );
-                },
-                itemCount: items == null ? 0 : items.length,
-              );
+              }
             }
-            else if (snapshot.hasError){
-              return Text("${snapshot.error}");
-            }
-            // By default, show a loading spinner
-            return CircularProgressIndicator();
-          }
-        ),
+        )
       )
     );
   }
