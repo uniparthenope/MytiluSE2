@@ -37,6 +37,7 @@ dependencies:
   http: ^0.13.4
   flutter_login: ^3.1.0
   date_time_picker: "^2.1.0"
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:

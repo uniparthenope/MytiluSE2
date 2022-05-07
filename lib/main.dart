@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mytiluse/itemPage.dart';
 import 'about.dart';
-import 'login.dart';
 import 'mytiluse.dart';
 import 'dart:async';
 
@@ -99,7 +98,7 @@ class _MyAppState extends State<MyApp> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => MytiluSE(isLogged: true)),
+                                  MaterialPageRoute(builder: (context) => MytiluSE()),
                                 );
                               },
                               child: const Text('Accept and Continue'),

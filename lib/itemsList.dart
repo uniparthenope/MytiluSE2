@@ -19,7 +19,7 @@ class Row {
 }
 
 
-Future<List> getItems(bool isLogged, String date, locations) async {
+Future<List> getItems(String date, locations) async {
   List<Row> list = <Row>[];
 
   for (int i=0; i < locations.length; i++){
@@ -51,15 +51,18 @@ Future<List> getItems(bool isLogged, String date, locations) async {
     }
   }
 
+  list.sort((a, b) {
+    return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+  });
+
   return list;
 }
 
 class ListLayout extends StatefulWidget {
-  final bool isLogged;
   final String date;
   final List<String> locations;
 
-  ListLayout({required this.isLogged, required this.date, required this.locations});
+  ListLayout({required this.date, required this.locations});
 
   @override
   _ListLayoutState createState() => _ListLayoutState();
@@ -77,7 +80,7 @@ class _ListLayoutState extends State<ListLayout> {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-            future: getItems(widget.isLogged, date, locations),
+            future: getItems(date, locations),
             builder: (context, AsyncSnapshot<List> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());

@@ -47,11 +47,9 @@ class ItemPageState extends State<ItemPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title,),
-        backgroundColor: Color.fromRGBO(0, 96, 160, 1.0),
+        backgroundColor: const Color.fromRGBO(0, 96, 160, 1.0),
       ),
-      body: Container(
-        child: Center( child: _widgetOptions.elementAt(_selectedIndex),),
-      ),
+      body: Center( child: _widgetOptions.elementAt(_selectedIndex),),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -66,7 +64,7 @@ class ItemPageState extends State<ItemPage>{
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
-        backgroundColor: Color.fromRGBO(0, 96, 160, 1.0),
+        backgroundColor: const Color.fromRGBO(0, 96, 160, 1.0),
         onTap: _onItemTapped,
       ),
     );

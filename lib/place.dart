@@ -39,7 +39,7 @@ Future<Weather_Item> getItemWeather(id, date) async {
     String urlMap = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
         id + "/plot/image?date=" + date;
     String urlMap2 = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
-        id + "/plot/image?output=wn1?date=" + date;
+        id + "/plot/image?output=wn1&date=" + date;
     String url = "https://api.meteo.uniparthenope.it/products/wrf5/forecast/" +
         id + "?date=" + date;
 
@@ -70,21 +70,17 @@ Future<Sea_Item> getItemSea(id, date) async {
   String urlWcm3 = "https://api.meteo.uniparthenope.it/products/wcm3/forecast/" +
       id + "/plot/image?date=" + date;
   String urlSal = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sss?date=" + date;
+      id + "/plot/image?output=sss&date=" + date;
   String urlTemp = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sst?date=" + date;
+      id + "/plot/image?output=sst&date=" + date;
   String urlRms = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
       id + "/plot/image?date=" + date;
   String url = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
       id + "?date=" + date;
 
   var element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp:urlTemp,urlRms:urlRms);
-  print(urlWcm3);
 
-
-  // final response = await http.get(Uri.parse(apiBase + "http://api.meteo.uniparthenope.it/products/rms3/forecast/" + id + "?date=" + formattedDate + "&opt=place"));
   final response = await http.get(Uri.parse(url));
-  print(url);
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     if (data["result"] == "ok") {
@@ -153,14 +149,13 @@ class PlacePageState extends State<PlacePage>{
                               child: Column(
 
                                 children: [
-                                  Text('Informations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  const Text('Informations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                   const Divider(height: 20, thickness: 0,),
 
                                   // Località
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Weather: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
+                                      const Expanded(child:  Text('Weather: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
                                       Expanded(child:  Text(wL ?? ''), flex: 1,),
                                       Expanded(child:  Image.asset(w ?? '', height: 50,), flex: 1,),
 
@@ -169,24 +164,21 @@ class PlacePageState extends State<PlacePage>{
                                   // Vento 10m
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Wind 10m: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Wind 10m: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(w10 ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Temperatura
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Temperature: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Temperature: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(t ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Pioggia
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Rain: ',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Rain: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(r ?? ''), flex: 1,),
                                     ],
                                   ),
@@ -195,69 +187,67 @@ class PlacePageState extends State<PlacePage>{
                             ),
                             const Divider(height: 20, thickness: 0),
 
-                            Container(
-                              child: Column(
-                                children: [
-                                  Text('Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-                                  Image.network(urlMap2 ?? '',fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace){
-                                      return Container(
-                                      color: Colors.redAccent,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'Map not available!',
+                            Column(
+                              children: [
+                                const Text('Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                Image.network(urlMap2 ?? '',fit: BoxFit.fill,
+                                  errorBuilder: (context, error, stackTrace){
+                                    return Container(
+                                    color: Colors.redAccent,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Map not available!',
 
-                                        style: TextStyle(fontSize: 30, color: Colors.white),
+                                      style: TextStyle(fontSize: 30, color: Colors.white),
+                                    ),
+                                  );
+                                  },
+                                  loadingBuilder: (BuildContext context, Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress.expectedTotalBytes != null
+                                            ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                            : null,
                                       ),
                                     );
-                                    },
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  Image.asset('resources/colorbar/bar_pioggia.png'),
-                                  Image.asset('resources/colorbar/bar_nuvole.png'),
-                                  Image.asset('resources/colorbar/bar_neve.png'),
-                                  const Divider(height: 20, thickness: 0),
-                              Text('Wind Speed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  },
+                                ),
+                                Image.asset('resources/colorbar/bar_pioggia.png'),
+                                Image.asset('resources/colorbar/bar_nuvole.png'),
+                                Image.asset('resources/colorbar/bar_neve.png'),
+                                const Divider(height: 20, thickness: 0),
+                                const Text('Wind Speed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                             Image.network(urlMap ?? '',
-                              errorBuilder: (context, error, stackTrace){
-                                return Container(
-                                  color: Colors.redAccent,
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    'Map not available!',
+                            errorBuilder: (context, error, stackTrace){
+                              return Container(
+                                color: Colors.redAccent,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'Map not available!',
 
-                                    style: TextStyle(fontSize: 30, color: Colors.white),
-                                  ),
-                                );
-                              },
-                              loadingBuilder: (BuildContext context, Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },),
-                                  Image.asset('resources/colorbar/bar_vento.png'),
+                                  style: TextStyle(fontSize: 30, color: Colors.white),
+                                ),
+                              );
+                            },
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },),
+                                Image.asset('resources/colorbar/bar_vento.png'),
 
-                                ],
-                              ),
+                              ],
                             )
                           ],
                         ),
