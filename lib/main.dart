@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mytiluse/itemPage.dart';
 import 'about.dart';
@@ -7,18 +8,25 @@ import 'dart:async';
 
 import 'package:http/http.dart' as http;
 
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 var isLogged = false;
 const String apiBase= 'https://api.meteo.uniparthenope.it';
 
 Future<String> getMessage() async {
   final response = await http
-      .get(Uri.parse(apiBase + "/legal/disclaimer"));
+      .get(Uri.parse(apiBase + "/legal/disclaimer?lang=it-IT"));
 
   if (response.statusCode == 200) {
     //log(response.body);
     var message = jsonDecode(response.body);
-
-    return message['i18n']['en-US']['disclaimer'].toString();
+    return message['i18n']['it-IT']['disclaimer'].toString();
 
   } else {
     // If the server did not return a 200 OK response,
@@ -27,7 +35,10 @@ Future<String> getMessage() async {
   }
 }
 
-void main() => runApp(const MyApp());
+void main() {
+  HttpOverrides.global = new MyHttpOverrides();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -73,7 +84,7 @@ class _MyAppState extends State<MyApp> {
                     actions: <Widget>[
                       IconButton(
                         icon: const Icon(Icons.info),
-                        tooltip: 'About',
+                        tooltip: 'Informazioni',
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -101,7 +112,7 @@ class _MyAppState extends State<MyApp> {
                                   MaterialPageRoute(builder: (context) => MytiluSE()),
                                 );
                               },
-                              child: const Text('Accept and Continue'),
+                              child: const Text('Accetta e continua'),
                             ),
                           )
                         ],

@@ -23,15 +23,15 @@ class Weather_Item {
 
 class Sea_Item {
   String? urlWcm3;
-  String? urlSal;
-  String? urlTemp;
+  String? urlWw3;
+  String? urlAiquam;
   String? urlRms;
   String? curDir;
   String? curVal;
   String? T_Sup;
   String? S_Sup;
 
-  Sea_Item({this.urlWcm3, this.urlSal, this.urlTemp, this.urlRms, this.curDir, this.curVal, this.T_Sup, this.S_Sup});
+  Sea_Item({this.urlWcm3, this.urlAiquam, this.urlWw3, this.urlRms, this.curDir, this.curVal, this.T_Sup, this.S_Sup});
 }
 
 Future<Weather_Item> getItemWeather(id, date) async {
@@ -69,16 +69,16 @@ Future<Sea_Item> getItemSea(id, date) async {
 
   String urlWcm3 = "https://api.meteo.uniparthenope.it/products/wcm3/forecast/" +
       id + "/plot/image?date=" + date;
-  String urlSal = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sss&date=" + date;
-  String urlTemp = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
-      id + "/plot/image?output=sst&date=" + date;
+  String urlWw3 = "https://api.meteo.uniparthenope.it/products/ww33/forecast/" +
+      id + "/plot/image?output=hsd&date=" + date;
+  String urlAiquam = "https://api.meteo.uniparthenope.it/products/aiq3/forecast/" +
+      id + "/plot/image?output=gen&date=" + date;
   String urlRms = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
       id + "/plot/image?date=" + date;
   String url = "https://api.meteo.uniparthenope.it/products/rms3/forecast/" +
       id + "?date=" + date;
 
-  var element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp:urlTemp,urlRms:urlRms);
+  var element = Sea_Item(urlWcm3: urlWcm3, urlWw3: urlWw3, urlAiquam:urlAiquam,urlRms:urlRms);
 
   final response = await http.get(Uri.parse(url));
   if (response.statusCode == 200) {
@@ -91,10 +91,10 @@ Future<Sea_Item> getItemSea(id, date) async {
         String SSup = data["forecast"]["sss"].toString() + ' [1/1000]';
 
 
-      element = Sea_Item(urlWcm3: urlWcm3, urlSal: urlSal, urlTemp: urlTemp, urlRms: urlRms,
+      element = Sea_Item(urlWcm3: urlWcm3, urlWw3: urlWw3, urlAiquam: urlAiquam, urlRms: urlRms,
       curVal: curVal, curDir: curDir, T_Sup: TSup, S_Sup: SSup);
-    }
 
+    }
   }
   return element;
 }
@@ -149,13 +149,13 @@ class PlacePageState extends State<PlacePage>{
                               child: Column(
 
                                 children: [
-                                  const Text('Informations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  const Text('Informazioni', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                   const Divider(height: 20, thickness: 0,),
 
                                   // Località
                                   Row(
                                     children: [
-                                      const Expanded(child:  Text('Weather: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
+                                      const Expanded(child:  Text('Meteo: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
                                       Expanded(child:  Text(wL ?? ''), flex: 1,),
                                       Expanded(child:  Image.asset(w ?? '', height: 50,), flex: 1,),
 
@@ -164,21 +164,21 @@ class PlacePageState extends State<PlacePage>{
                                   // Vento 10m
                                   Row(
                                     children: [
-                                      const Expanded(child:  Text('Wind 10m: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Vento 10m: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(w10 ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Temperatura
                                   Row(
                                     children: [
-                                      const Expanded(child:  Text('Temperature: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Temperatura: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(t ?? ''), flex: 1,),
                                     ],
                                   ),
                                   // Pioggia
                                   Row(
                                     children: [
-                                      const Expanded(child:  Text('Rain: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
+                                      const Expanded(child:  Text('Pioggia: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(r ?? ''), flex: 1,),
                                     ],
                                   ),
@@ -189,7 +189,7 @@ class PlacePageState extends State<PlacePage>{
 
                             Column(
                               children: [
-                                const Text('Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                const Text('Mappa', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                 Image.network(urlMap2 ?? '',fit: BoxFit.fill,
                                   errorBuilder: (context, error, stackTrace){
                                     return Container(
@@ -219,7 +219,7 @@ class PlacePageState extends State<PlacePage>{
                                 Image.asset('resources/colorbar/bar_nuvole.png'),
                                 Image.asset('resources/colorbar/bar_neve.png'),
                                 const Divider(height: 20, thickness: 0),
-                                const Text('Wind Speed', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                const Text('Velocità del Vento', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
                             Image.network(urlMap ?? '',
                             errorBuilder: (context, error, stackTrace){
@@ -266,8 +266,8 @@ class PlacePageState extends State<PlacePage>{
                 builder: (BuildContext context, AsyncSnapshot<Sea_Item> snapshot) {
                   var data = snapshot.data;
                   String? urlWcm3 = data?.urlWcm3;
-                  String? urlSal = data?.urlSal;
-                  String? urlTemp = data?.urlTemp;
+                  String? urlAiquam = data?.urlAiquam;
+                  String? urlWw3 = data?.urlWw3;
                   String? urlRms = data?.urlRms;
 
                   String? curDir = data?.curDir;
@@ -286,12 +286,12 @@ class PlacePageState extends State<PlacePage>{
                               child: Column(
 
                                 children: [
-                                  Text('Informations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  Text('Informazioni', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                                   const Divider(height: 20, thickness: 0,),
 
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Surface Current: ',
+                                      Expanded(child:  Text('Corrente superficiale: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 2,),
                                       Expanded(child:  Text(curDir ?? ''), flex: 1,),
                                       Expanded(child:  Image.asset(curVal ?? '', height: 50,), flex: 1,),
@@ -302,7 +302,7 @@ class PlacePageState extends State<PlacePage>{
                                   // Temperatura Sup
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Surface Temperature: ',
+                                      Expanded(child:  Text('Temperatura superficiale: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(t_sup ?? ''), flex: 1,),
                                     ],
@@ -310,7 +310,7 @@ class PlacePageState extends State<PlacePage>{
                                   // Surface Salinity
                                   Row(
                                     children: [
-                                      Expanded(child:  Text('Surface Salinity: ',
+                                      Expanded(child:  Text('Salinità superficiale: ',
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)), flex: 1,),
                                       Expanded(child:  Text(s_sup ?? ''), flex: 1,),
                                     ],
@@ -323,38 +323,10 @@ class PlacePageState extends State<PlacePage>{
                             Container(
                               child: Column(
                                 children: [
-                                  Text('RMS3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-
-                                  Image.network(urlWcm3 ?? '',fit: BoxFit.fill,
-                                    errorBuilder: (context, error, stackTrace){
-                                      return Container(
-                                        color: Colors.redAccent,
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          'Map not available!',
-
-                                          style: TextStyle(fontSize: 30, color: Colors.white),
-                                        ),
-                                      );
-                                    },
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  Image.asset('resources/colorbar/bar_corr.png'),
                                   const Divider(height: 20, thickness: 0),
-                                  Text('Salinity Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  Text('AIQUAM', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
-                                  Image.network(urlSal ?? '',
+                                  Image.network(urlAiquam ?? '',
                                     errorBuilder: (context, error, stackTrace){
                                       return Container(
                                         color: Colors.redAccent,
@@ -381,38 +353,8 @@ class PlacePageState extends State<PlacePage>{
                                   Image.asset('resources/colorbar/bar_sss.png'),
 
                                   const Divider(height: 20, thickness: 0),
-                                  Text('Temperature Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-
-                                  Image.network(urlTemp ?? '',
-                                    errorBuilder: (context, error, stackTrace){
-                                      return Container(
-                                        color: Colors.redAccent,
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          'Map not available!',
-
-                                          style: TextStyle(fontSize: 30, color: Colors.white),
-                                        ),
-                                      );
-                                    },
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },),
-                                  Image.asset('resources/colorbar/bar_sst.png'),
-
-                                  const Divider(height: 20, thickness: 0),
-                                  Text('WCM3 Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-
-                                  Image.network(urlRms ?? '',
+                                  Text('WCM3', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                                  Image.network(urlWcm3 ?? '',
                                     errorBuilder: (context, error, stackTrace){
                                       return Container(
                                         color: Colors.redAccent,
@@ -437,6 +379,64 @@ class PlacePageState extends State<PlacePage>{
                                     },),
                                   Image.asset('resources/colorbar/bar_concentrazion.png'),
 
+                                  const Divider(height: 20, thickness: 0),
+                                  Text('RMS3', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+
+                                  Image.network(urlRms ?? '',fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Image.asset('resources/colorbar/bar_corr.png'),
+
+                                  const Divider(height: 20, thickness: 0),
+                                  Text('Altezza Onde', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+
+                                  Image.network(urlWw3 ?? '',
+                                    errorBuilder: (context, error, stackTrace){
+                                      return Container(
+                                        color: Colors.redAccent,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          'Map not available!',
+
+                                          style: TextStyle(fontSize: 30, color: Colors.white),
+                                        ),
+                                      );
+                                    },
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },),
+                                  Image.asset('resources/colorbar/bar_sst.png'),
                                 ],
                               ),
                             )

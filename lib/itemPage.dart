@@ -14,7 +14,7 @@ class ItemPage extends StatefulWidget{
 
 }
 class ItemPageState extends State<ItemPage>{
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -54,16 +54,17 @@ class ItemPageState extends State<ItemPage>{
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.filter_drama),
-            label: 'Weather',
+            label: 'Meteo',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sailing),
-            label: 'Sea',
+            label: 'Mare',
           ),
 
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
         backgroundColor: const Color.fromRGBO(0, 96, 160, 1.0),
         onTap: _onItemTapped,
       ),
