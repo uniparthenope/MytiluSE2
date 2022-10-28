@@ -60,7 +60,8 @@ flutter:
     - resources/logo_mytiluse2.png
     - resources/arrow/
     - resources/status/
-    - resources/colorbar/
+    - resources/colorbar/it-IT/
+    - resources/colorbar/us-US/
     - resources/meteo_icon/
     - resources/team/
 

@@ -1,3 +1,5 @@
+//TODO Aggiornare barre di scala
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -215,9 +217,9 @@ class PlacePageState extends State<PlacePage>{
                                     );
                                   },
                                 ),
-                                Image.asset('resources/colorbar/bar_pioggia.png'),
-                                Image.asset('resources/colorbar/bar_nuvole.png'),
-                                Image.asset('resources/colorbar/bar_neve.png'),
+                                Image.asset('resources/colorbar/it-IT/bar_pioggia.jpg'),
+                                Image.asset('resources/colorbar/it-IT/bar_nuvole.jpg'),
+                                Image.asset('resources/colorbar/it-IT/bar_neve.jpg'),
                                 const Divider(height: 20, thickness: 0),
                                 const Text('Velocità del Vento', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
 
@@ -245,7 +247,7 @@ class PlacePageState extends State<PlacePage>{
                                 ),
                               );
                             },),
-                                Image.asset('resources/colorbar/bar_vento.png'),
+                                Image.asset('resources/colorbar/it-IT/bar_vento.jpg'),
 
                               ],
                             )
@@ -350,7 +352,7 @@ class PlacePageState extends State<PlacePage>{
                                         ),
                                       );
                                     },),
-                                  Image.asset('resources/colorbar/bar_sss.png'),
+                                  Image.asset('resources/colorbar/it-IT/bar_aiquam.jpg'),
 
                                   const Divider(height: 20, thickness: 0),
                                   Text('WCM3', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
@@ -377,7 +379,7 @@ class PlacePageState extends State<PlacePage>{
                                         ),
                                       );
                                     },),
-                                  Image.asset('resources/colorbar/bar_concentrazion.png'),
+                                  Image.asset('resources/colorbar/it-IT/bar_concentrazion.jpg'),
 
                                   const Divider(height: 20, thickness: 0),
                                   Text('RMS3', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
@@ -407,7 +409,7 @@ class PlacePageState extends State<PlacePage>{
                                       );
                                     },
                                   ),
-                                  Image.asset('resources/colorbar/bar_corr.png'),
+                                  Image.asset('resources/colorbar/it-IT/bar_corr.jpg'),
 
                                   const Divider(height: 20, thickness: 0),
                                   Text('Altezza Onde', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
@@ -436,7 +438,7 @@ class PlacePageState extends State<PlacePage>{
                                         ),
                                       );
                                     },),
-                                  Image.asset('resources/colorbar/bar_sst.png'),
+                                  Image.asset('resources/colorbar/it-IT/bar_ww3.jpg'),
                                 ],
                               ),
                             )
