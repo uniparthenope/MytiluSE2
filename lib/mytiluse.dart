@@ -95,9 +95,51 @@ class _MytiluSEState extends State<MytiluSE>{
                   },
                 )
             ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Expanded(flex: 1, child: Text("Dir. Vento", style: const TextStyle(fontWeight: FontWeight.bold))),
+                    Expanded(flex: 5, child: Center(child: Text("Nome", style: const TextStyle(fontWeight: FontWeight.bold)))),
+                    Expanded(flex: 2, child: Text("Conc. Inquinanti", style: const TextStyle(fontWeight: FontWeight.bold))),
+                  ],
+                ),
+            ),
             Expanded(
               flex: 10,
               child: Center( child: _widgetOptions.elementAt(_selectedIndex),),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  Center(child:Text("Legenda Inquinanti:", style: const TextStyle(fontWeight: FontWeight.bold))),
+                  Padding(padding: EdgeInsets.all(3),
+                  child: Column(children: [
+                    Row(children: [
+                      Expanded(flex: 1, child: Image.asset("resources/status/0.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/1.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/2.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/3.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/4.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/5.png", height: 15,)),
+                      Expanded(flex: 1, child: Image.asset("resources/status/6.png", height: 15,)),
+
+                    ],),
+                    Row(children: [
+                      Expanded(flex: 1, child: Center(child: Text("Ass."))),
+                      Expanded(flex: 1, child: Center(child: Text("Molto Bassa"))),
+                      Expanded(flex: 1, child: Center(child: Text("Bassa"))),
+                      Expanded(flex: 1, child: Center(child: Text("Media"))),
+                      Expanded(flex: 1, child: Center(child: Text("Alta"))),
+                      Expanded(flex: 1, child: Center(child: Text("Molto Alta"))),
+                      Expanded(flex: 1, child: Center(child: Text("Crit."))),
+                    ],)
+                  ],))
+
+
+                ],
+              ),
             ),
           ]
       ),

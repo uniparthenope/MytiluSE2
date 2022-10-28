@@ -7,7 +7,7 @@ import 'package:mytiluse/itemPage.dart';
 const String apiBase= 'https://api.meteo.uniparthenope.it';
 //const List<String> locations = ["VET0130", "VET0020", "VET0021", "VET0072", "VET0071", "VET0100", "VET0062", "VET0150", "VET0055", "VET0054", "VET0056", "VET0051", "VET0050", "VET0053", "VET0052", "VET0121", "VET0123", "VET0122", "VET0125", "VET0124", "VET0000", "VET0031", "VET0030", "VET0140", "VET0061", "VET0063", "VET0064", "VET0110", "VET0010", "VET0160", "VET0057", "VET0042", "VET0041"];
 
-class Row {
+class Rows {
   String? id;
   String? name;
   String? curDir;
@@ -15,16 +15,15 @@ class Row {
   String? status;
   String? dt;
 
-  Row({this.id, this.name, this.curDir, this.curVal, this.status});
+  Rows({this.id, this.name, this.curDir, this.curVal, this.status});
 }
 
 
 Future<List> getItems(String date, locations) async {
-  List<Row> list = <Row>[];
+  List<Rows> list = <Rows>[];
 
   for (int i=0; i < locations.length; i++){
     final response = await http.get(Uri.parse(apiBase + "/products/rms3/forecast/" + locations[i] + "?date=" + date + "&opt=place"));
-
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
@@ -45,7 +44,7 @@ Future<List> getItems(String date, locations) async {
           }
         }
 
-        var item = Row(id: id, name: name, curDir: scs, curVal: scm, status: status);
+        var item = Rows(id: id, name: name, curDir: scs, curVal: scm, status: status);
         list.add(item);
       }
     }
