@@ -1,9 +1,10 @@
 //TODO Aggiornare barre di scala
 
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:charts_flutter/flutter.dart' as charts;
 
 const String apiBase= 'https://api.meteo.uniparthenope.it';
 
@@ -32,8 +33,9 @@ class Sea_Item {
   String? curVal;
   String? T_Sup;
   String? S_Sup;
+  List<DataPoint>? dataPoints;
 
-  Sea_Item({this.urlWcm3, this.urlAiquam, this.urlWw3, this.urlRms, this.curDir, this.curVal, this.T_Sup, this.S_Sup});
+  Sea_Item({this.urlWcm3, this.urlAiquam, this.urlWw3, this.urlRms, this.curDir, this.curVal, this.T_Sup, this.S_Sup, this.dataPoints});
 }
 
 Future<Weather_Item> getItemWeather(id, date) async {
@@ -86,21 +88,59 @@ Future<Sea_Item> getItemSea(id, date) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     if (data["result"] == "ok") {
-        String curDir = data["forecast"]["scm"].toString() + " m/sec";
-        String curVal = "resources/arrow/" + data["forecast"]["scs"] + ".jpg";
+      String curDir = data["forecast"]["scm"].toString() + " m/sec";
+      String curVal = "resources/arrow/" + data["forecast"]["scs"] + ".jpg";
 
-        String TSup = data["forecast"]["sst"].toString() + ' °C';
-        String SSup = data["forecast"]["sss"].toString() + ' [1/1000]';
+      String TSup = data["forecast"]["sst"].toString() + ' °C';
+      String SSup = data["forecast"]["sss"].toString() + ' [1/1000]';
 
+      Future<List<DataPoint>> dataPointsFuture = getTimeSeriesAIQ(id);
+      List<DataPoint> dataPoints = await dataPointsFuture;
 
       element = Sea_Item(urlWcm3: urlWcm3, urlWw3: urlWw3, urlAiquam: urlAiquam, urlRms: urlRms,
-      curVal: curVal, curDir: curDir, T_Sup: TSup, S_Sup: SSup);
-
+      curVal: curVal, curDir: curDir, T_Sup: TSup, S_Sup: SSup, dataPoints: dataPoints);
     }
   }
   return element;
 }
 
+class DataPoint {
+  final DateTime timestamp;
+  final double value;
+
+  DataPoint({required this.timestamp, required this.value});
+}
+
+Future<List<DataPoint>> getTimeSeriesAIQ(id) async {
+  String url = "https://api.meteo.uniparthenope.it/products/aiq3/timeseries/" + id;
+  List<DataPoint> dataPoints = [];
+
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    if (data["result"] == "ok") {
+      for (var data in data["timeseries"]) {
+        String dateString = data["dateTime"];
+        int year = int.parse(dateString.substring(0, 4));
+        int month = int.parse(dateString.substring(4, 6));
+        int day = int.parse(dateString.substring(6, 8));
+        int hour = int.parse(dateString.substring(9, 11));
+        int minute = int.parse(dateString.substring(11, 13));
+
+        DateTime parsedDate = DateTime.utc(year, month, day, hour, minute);
+
+        dataPoints.add(DataPoint(
+          timestamp: parsedDate,
+          value: data["mci"],
+        ));
+      }
+    }
+  } else {
+    throw Exception('Failed to load data from API');
+  }
+
+  return dataPoints;
+}
 
 class PlacePage extends StatefulWidget{
   final int state;
@@ -125,6 +165,7 @@ class PlacePageState extends State<PlacePage>{
     var state = widget.state;
     var id = widget.id;
     var date = widget.date;
+
     if (state == 1){
       return Scaffold(
           body: Center(
@@ -277,6 +318,37 @@ class PlacePageState extends State<PlacePage>{
                   String? t_sup = data?.T_Sup;
                   String? s_sup = data?.S_Sup;
 
+                  List<DataPoint>? dataPoints = data?.dataPoints;
+
+                  var series = [
+                    charts.Series<DataPoint, DateTime>(
+                      id: 'Value',
+                      colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+                      domainFn: (DataPoint data, _) => data.timestamp,
+                      measureFn: (DataPoint data, _) => data.value,
+                      data: dataPoints ?? [],
+                    )
+                  ];
+
+                  var chart = charts.TimeSeriesChart(
+                    series,
+                    animate: true,
+                    behaviors: [
+                      charts.ChartTitle('Mussels contamination index'),
+                    ],
+                    defaultRenderer: charts.BarRendererConfig<DateTime>(
+                        groupingType: charts.BarGroupingType.stacked,
+                    ),
+                  );
+
+                  var chartWidget = Padding(
+                    padding: new EdgeInsets.all(32.0),
+                    child: SizedBox(
+                      height: 200.0,
+                      child: chart,
+                    ),
+                  );
+
                   return Container(
                       child: SingleChildScrollView(
                         child: Column(
@@ -327,6 +399,8 @@ class PlacePageState extends State<PlacePage>{
                                 children: [
                                   const Divider(height: 20, thickness: 0),
                                   Text('AIQUAM', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+
+                                  chartWidget,
 
                                   Image.network(urlAiquam ?? '',
                                     errorBuilder: (context, error, stackTrace){
